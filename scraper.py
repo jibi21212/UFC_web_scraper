@@ -21,10 +21,7 @@ def scrape_match_history(fighter_soup, fighter_name):
     for match in match_history_table:
         # Check if 'loss' exists in the <i class="b-flag__text"> element
         flag_text_element = match.select_one('i.b-flag__text')
-        is_win = False
-        if flag_text_element and 'loss' not in flag_text_element.get_text(strip=True).lower():
-            is_win = True
-
+        is_win = flag_text_element.get_text(strip=True).lower() if flag_text_element else 'N/A'
         # Extract opponent's name (the second fighter in the opponent list)
         opponent_elements = match.select('td.l-page_align_left p.b-fight-details__table-text a.b-link')
         opponent = opponent_elements[1].get_text(strip=True) if len(opponent_elements) > 1 else 'N/A'
@@ -45,7 +42,7 @@ def scrape_match_history(fighter_soup, fighter_name):
 
         history.append({
             'Opponent': opponent,
-            'is_win': is_win,
+            'Result': is_win,
             'Method': method
         })
 
@@ -114,8 +111,7 @@ def scrape_fighter_profile(fighter_url):
 
     for match in match_history:
         if match['Opponent']!='N/A':
-            result = "Win" if match['is_win'] else "Loss"
-            print(f"{name} vs {match['Opponent']} : {result} by {match['Method']}")
+            print(f"{name} vs {match['Opponent']} : {match['Result']} by {match['Method']}")
     print("-" * 40)
 
 # Keep track of already scraped fighter URLs to avoid duplication
