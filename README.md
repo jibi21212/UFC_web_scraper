@@ -2,6 +2,9 @@ Python web scraper for UFC Fighter data.
 
 Scrapes data such as:
 - Name
+- Wins
+- Losses
+- Draws
 - Height
 - Weight
 - Reach
