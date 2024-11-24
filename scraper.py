@@ -2,6 +2,7 @@ import string
 from bs4 import BeautifulSoup
 import requests
 
+
 # Function to extract specific fighter data based on the label
 def extract_fighter_data(fighter_soup, label):
     data = fighter_soup.find('i', string=lambda text: text and label in text)
@@ -54,6 +55,7 @@ def scrape_fighter_profile(fighter_url):
 
     # Scraping fighter's name
     name = fighter_soup.select_one('span.b-content__title-highlight')
+
     if name:
         name = name.get_text(strip=True)
     else:
@@ -61,6 +63,14 @@ def scrape_fighter_profile(fighter_url):
         return None  # Skip if no name is found
 
     # Scrape fighter's height, weight, reach, stance, and DOB
+    record = fighter_soup.select_one('span.b-content__title-record')
+    if record:
+        record_text = record.get_text(strip=True)
+        record_values = record_text.replace("Record:", "").strip()
+        wins, losses, draws = record_values.split('-')
+    else:
+        wins = losses = draws = 'N/A'
+
     height = extract_fighter_data(fighter_soup, "Height:")
     weight = extract_fighter_data(fighter_soup, "Weight:")
     reach = extract_fighter_data(fighter_soup, "Reach:")
@@ -93,6 +103,9 @@ def scrape_fighter_profile(fighter_url):
     # Print or save the scraped fighter details
     print(f"""
     Name: {name}
+    Wins: {wins}
+    Losses: {losses}
+    Draws: {draws}
     Height: {height}
     Weight: {weight}
     Reach: {reach}
